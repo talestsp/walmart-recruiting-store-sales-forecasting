@@ -13,7 +13,7 @@ def get_time_series_figure(width=400, height=400, title=""):
     fig.xaxis.formatter = DatetimeTickFormatter(
         hours=["%H:%M %d/%b"],
         days=["%d/%b"],
-        months=["%d/%b"],
+        months=["%d/%b/%Y"],
         years=["%d/%b/%Y"],
     )
     return fig
