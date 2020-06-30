@@ -3,6 +3,7 @@ import numpy as np
 from sklearn import metrics
 import scipy.stats
 
+
 from src.utils import pretties
 
 
@@ -277,3 +278,10 @@ def score_curve_data(y_true, y_proba, on_label="fut_rech", round_values=2, as_fr
 
     return {"precision": list(precision[:-1]), "recall": list(recall[:-1]), "threshold": list(thresholds), "label": on_label}
 
+
+def mean_confidence_interval(data, confidence=0.75):
+    a = 1.0 * np.array(data)
+    n = len(a)
+    m, se = np.mean(a), scipy.stats.sem(a)
+    h = se * scipy.stats.t.ppf((1 + confidence) / 2., n-1)
+    return m, m-h, m+h

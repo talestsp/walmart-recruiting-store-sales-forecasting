@@ -20,6 +20,11 @@ def str_to_datetime_try_formats(str_dt):
     except ValueError:
         return str_to_datetime(str_dt, str_dt_format='%Y/%m/%d %H:%M:%S')
 
+def time_resolution(data):
+    dates = data["Date"].drop_duplicates().apply(pd.to_datetime).sort_values()
+    return dates.iloc[1: len(dates) - 1].reset_index(drop=True) - dates.iloc[0: len(dates) - 2].reset_index(
+        drop=True)
+
 def delta_time_seconds(str_dt_initial, str_dt_final, str_dt_format='%Y-%m-%d %H:%M:%S'):
     '''
     Returns the time difference (seconds) between two strings representing date and/time
