@@ -1,12 +1,13 @@
 import pandas as pd
-from bokeh.plotting import figure
+from bokeh.plotting import figure, ColumnDataSource
 from bokeh.models import DatetimeTickFormatter
 from bokeh.models import Range1d
 
 
+WEEK_N_PALETTE = {1: "#581845", 2: "#900C3F", 3: "#C70039", 4: "#FF5733", 5: "#FFC300"}
+
 def wide_tools():
     return "pan,ywheel_zoom,xwheel_zoom,reset,save"
-
 
 def get_time_series_figure(width=400, height=400, title=""):
     fig = figure(plot_width=width, plot_height=height, x_axis_type='datetime', tools=wide_tools(), title=title)
@@ -31,6 +32,27 @@ def plot_time_series_count(str_datetimes, values, color, title="", relative_y_ax
         p.y_range = Range1d(0, max(values) * 1.1)
 
     return p
+
+
+def time_series_count_painted(data, palette=WEEK_N_PALETTE, title="", width=900, height=300, alpha=0.9):
+    p = get_time_series_figure(width=width, height=height, title=title)
+
+    grouped_sales = data.groupby("Date")["Weekly_Sales"].median().to_frame()
+    data["week_color"] = data["week_n"].apply(lambda week_n: palette[week_n])
+    week_n_colors = data[["Date", "week_color"]].drop_duplicates().set_index("Date")
+    week_ns = data[["Date", "week_n"]].drop_duplicates().set_index("Date")
+
+    plot_data = grouped_sales.merge(week_n_colors, how="left", left_index=True, right_index=True)
+    plot_data = plot_data.merge(week_ns, how="left", left_index=True, right_index=True).reset_index()
+
+    plot_data["Date"] = plot_data["Date"].apply(pd.to_datetime)
+    source = ColumnDataSource(plot_data)
+
+    p.circle("Date", "Weekly_Sales", size=4, color="week_color", alpha=alpha, legend="week_n", source=source)
+    p.line("Date", "Weekly_Sales", line_width=1, color="gray", alpha=0.3, source=source)
+
+    return p
+
 
 def plot_error_values(df, group_by_col, values_col, title="", drop_quantile=0.20,
                       width=400, height=300):

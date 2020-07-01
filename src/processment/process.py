@@ -7,22 +7,33 @@ def features_semantic_enrichment(data):
     data["datetime"] = data["Date"].apply(lambda d: time_utils.str_to_datetime(d, "%Y-%m-%d"))
     data["day_n"] = data["datetime"].apply(lambda d: d.day).astype(int)
     data["month_n"] = data["datetime"].apply(lambda d: d.month).astype(str).apply(lambda mn : "0" + mn if int(mn) <= 9 else mn)
-    data["week_n"] = data["day_n"].apply(week_n)
+    data = week_n(data)
     data["celsius"] = (data["Temperature"] - 32) * 5 / 9
+    data["wm_date"] = data["month_n"] + "/" + data["week_n"].astype(str)
     data = data.groupby("Store").apply(temperature_diff)
     data = data.groupby("Store").apply(holiday_pre_pos).reset_index(drop=True)
 
     return data
 
-def week_n(day_n):
-    if 1 <= day_n <= 7:
-        return 1
-    if 8 <= day_n <= 15:
-        return 2
-    if 16 <= day_n <= 23:
-        return 3
-    if 24 <= day_n <= 31:
-        return 4
+def week_n(data):
+    data["date_ym"] = data["Date"].apply(lambda dt_str: dt_str[0:7])
+
+    week_ns = []
+
+    for date_ym in data["date_ym"].drop_duplicates():
+        days_n = data[data["date_ym"] == date_ym]["day_n"].drop_duplicates().sort_values().tolist()
+
+        for day_n in days_n:
+            week_n = days_n.index(day_n) + 1
+            week_ns.append({"date_ym": date_ym, "day_n": day_n, "week_n": week_n})
+
+    week_ns = pd.DataFrame(week_ns)
+
+    return data.merge(pd.DataFrame(week_ns), how="left", left_on=["date_ym", "day_n"], right_on=["date_ym", "day_n"])
+
+
+def week_n_straight(day_n):
+    return round( 1 + (day_n/7.6))
 
 def sales_diff(group):
     group_sales = group.sort_values("timestamp")["Weekly_Sales"].iloc[1: len(group)].reset_index(drop=True)
