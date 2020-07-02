@@ -7,6 +7,7 @@ def features_semantic_enrichment(data):
     data["datetime"] = data["Date"].apply(lambda d: time_utils.str_to_datetime(d, "%Y-%m-%d"))
     data["day_n"] = data["datetime"].apply(lambda d: d.day).astype(int)
     data["month_n"] = data["datetime"].apply(lambda d: d.month).astype(str).apply(lambda mn : "0" + mn if int(mn) <= 9 else mn)
+    data["year"] = data["datetime"].apply(lambda d: d.year).astype(int)
     data = week_n(data)
     data["celsius"] = (data["Temperature"] - 32) * 5 / 9
     data["wm_date"] = data["month_n"] + "/" + data["week_n"].astype(str)

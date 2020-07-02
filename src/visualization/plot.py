@@ -51,6 +51,8 @@ def time_series_count_painted(data, palette=WEEK_N_PALETTE, title="", width=900,
     p.circle("Date", "Weekly_Sales", size=4, color="week_color", alpha=alpha, legend="week_n", source=source)
     p.line("Date", "Weekly_Sales", line_width=1, color="gray", alpha=0.3, source=source)
 
+    p.legend.title = 'week_n'
+
     return p
 
 
