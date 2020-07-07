@@ -18,3 +18,4 @@ NOTES
 Similar Store-Dept sales
 Holidays
 Cutoff outliers
+Smoothing train data
