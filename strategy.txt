@@ -16,3 +16,5 @@ Próximos passos
 
 NOTES
 Similar Store-Dept sales
+Holidays
+Cutoff outliers
