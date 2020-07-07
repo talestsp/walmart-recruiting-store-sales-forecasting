@@ -33,6 +33,13 @@ def plot_time_series_count(str_datetimes, values, color, title="", relative_y_ax
 
     return p
 
+def time_series_count_painted_holidays(data, p, color="cyan", alpha=0.9):
+    holidays = data[data["IsHoliday"] == True]
+    holidays["Date"] = holidays["Date"].apply(pd.to_datetime)
+    grouped_sales = holidays.groupby("Date")["Weekly_Sales"].median().to_frame()
+    p.diamond("Date", "Weekly_Sales", line_color=color, size=12, line_width=2,
+              source=ColumnDataSource(grouped_sales), alpha=alpha, fill_color=None)
+    return p
 
 def time_series_count_painted(data, palette=WEEK_N_PALETTE, title="", width=900, height=300, alpha=0.9):
     p = get_time_series_figure(width=width, height=height, title=title)
@@ -51,7 +58,7 @@ def time_series_count_painted(data, palette=WEEK_N_PALETTE, title="", width=900,
     p.circle("Date", "Weekly_Sales", size=4, color="week_color", alpha=alpha, legend="week_n", source=source)
     p.line("Date", "Weekly_Sales", line_width=1, color="gray", alpha=0.3, source=source)
 
-    p.legend.title = 'week_n'
+    p.legend.title = 'week_n sales'
 
     return p
 
