@@ -20,13 +20,13 @@ def get_time_series_figure(width=400, height=400, title=""):
     return fig
 
 def plot_time_series_count(str_datetimes, values, color, title="", relative_y_axis=False, alpha=0.8, width=900,
-                           height=300, p=None):
+                           height=300, line_width=1, legend=None, p=None):
     if not p:
         p = get_time_series_figure(width=width, height=height, title=title)
 
     datetimes = pd.to_datetime(str_datetimes)
-    p.circle(datetimes, values, size=3, color=color, alpha=alpha)
-    p.line(datetimes, values, line_width=1, color=color, alpha=alpha)
+    p.circle(datetimes, values, size=3, color=color, alpha=alpha, legend=legend)
+    p.line(datetimes, values, line_width=line_width, color=color, alpha=alpha)
 
     if not relative_y_axis:
         p.y_range = Range1d(0, max(values) * 1.1)
