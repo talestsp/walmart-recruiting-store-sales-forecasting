@@ -285,3 +285,11 @@ def mean_confidence_interval(data, confidence=0.75):
     m, se = np.mean(a), scipy.stats.sem(a)
     h = se * scipy.stats.t.ppf((1 + confidence) / 2., n-1)
     return m, m-h, m+h
+
+def normalize(series):
+    return {"norm": (series-series.min()) / (series.max() - series.min()),
+            "min": series.min(),
+            "max": series.max()}
+
+def revert_normalize(norm, s_min, s_max):
+    return norm * (s_max-s_min) + 1
