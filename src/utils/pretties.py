@@ -24,9 +24,9 @@ def display(element):
     except AttributeError:
         ip_disp.display(element)
 
-def columm_name_descrition(columm_name, description):
-    ip_disp.display(ip_disp.Markdown("# <font color='red'>{}</font>".format(columm_name)))
-    ip_disp.display(ip_disp.Markdown(description))
+# def columm_name_descrition(columm_name, description):
+#     ip_disp.display(ip_disp.Markdown("# <font color='red'>{}</font>".format(columm_name)))
+#     ip_disp.display(ip_disp.Markdown(description))
 
 def display_html(html):
     ip_disp.display(ip_disp.HTML(html))
@@ -96,10 +96,6 @@ def group_colors_map(df, group_colors_by, color_1='#ccedd2', color_2='#effcef', 
 
     return index_colors
 
-def paint_caller_id_df(df):
-    paint_df_grouped_by(df, "caller_id")
-
-
 def paint_df_grouped_by(df, column):
     '''
     Mostra o pandas.DataFrame com as linhas pintadas mantendo a mesma cor para linhas adjacentes que possuam mesmo
@@ -129,13 +125,3 @@ def walk_dict(a_dict, path=["."], apply_func=None, print_leaf=False):
             print("\t", "LEAF", k.upper(), "memory:", sys.getsizeof(a_dict[k]))
             print()
     path.pop()
-
-def unicode(column):
-    return column.apply(unidecode.unidecode)
-
-def unicode_df(df):
-    for col in df.columns:
-        if not df[col].dtype == np.object:
-            continue
-        df[col] = unicode(df[col])
-    return df
