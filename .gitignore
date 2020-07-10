@@ -3,6 +3,12 @@
 .idea/*
 data/*
 
+*.rar
+*.zip
+*.tar.gz
+*.tar
+*.gz
+
 __pycache__/
 *.py[cod]
 *$py.class
